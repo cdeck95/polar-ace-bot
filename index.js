@@ -10,14 +10,12 @@ let lastActiveTime = {};
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
-  const checkInterval = 1000 * 60 * 1; // every 1 minutes
-  // const checkInterval = 1000 * 60 * 15; // every 15 minutes
+  const checkInterval = 1000 * 60 * 15; // every 15 minutes
   //const checkInterval = 1000 * 60 * 60 * 2; // every 2 hours
   setInterval(() => {
     console.log("Checking for inactivity");
     const now = Date.now();
-    //const reminderInterval = 1000 * 60 * 60 * 1; // 1 hours in milliseconds
-    const reminderInterval = 1000 * 60 * 1; //every 1 minutes
+    const reminderInterval = 1000 * 60 * 60 * 1; // 1 hours in milliseconds
 
     const channels = CHANNELS.map((id) => client.channels.cache.get(id)).filter(
       (channel) => channel
