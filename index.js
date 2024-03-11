@@ -6,8 +6,36 @@ const client = new Client({
   intents: ["Guilds", "GuildMembers", "GuildMessages", "MessageContent"],
 });
 
+let lastActiveTime = {};
+
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
+  const checkInterval = 1000 * 60 * 1; // every 1 minutes
+  // const checkInterval = 1000 * 60 * 15; // every 15 minutes
+  //const checkInterval = 1000 * 60 * 60 * 2; // every 2 hours
+  setInterval(() => {
+    console.log("Checking for inactivity");
+    const now = Date.now();
+    //const reminderInterval = 1000 * 60 * 60 * 1; // 1 hours in milliseconds
+    const reminderInterval = 1000 * 60 * 1; //every 1 minutes
+
+    const channels = CHANNELS.map((id) => client.channels.cache.get(id)).filter(
+      (channel) => channel
+    );
+
+    channels.forEach((channel) => {
+      if (
+        !lastActiveTime[channel.id] ||
+        now - lastActiveTime[channel.id] > reminderInterval
+      ) {
+        console.log("Sending reminder");
+        channel.send(
+          "Hello! Don't forget, you can just type your questions or commands here to interact with me."
+        );
+        lastActiveTime[channel.id] = now;
+      }
+    });
+  }, checkInterval);
 });
 
 const INGORE_PREFIX = "!";
@@ -123,7 +151,7 @@ client.on("messageCreate", async (message) => {
     await message.reply(chunk);
   }
 
-  message.reply(response.choices[0].message.content);
+  // message.reply(response.choices[0].message.content);
 });
 
 client.login(process.env.DISCORD_TOKEN);
